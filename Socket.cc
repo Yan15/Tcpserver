@@ -1,12 +1,23 @@
 #include "Socket.h"
+#include "InetAddress.h"
 #include <iostream>
 
+int createfd()
+{
+	int ret = socket(AF_INET,SOCK_STREAM,0);
+	if(-1 == ret)
+	{
+		perror("socket");
+	}
+	return ret;
+}
 namespace st
 {
 Socket::Socket()
-:_fd(fd)
+:_fd(createfd())
 {}
-Socket::Socket(fd)
+
+Socket::Socket(int fd)
 :_fd(fd)
 {}
 void Socket::ready(InetAddress &addr)
@@ -19,7 +30,7 @@ void Socket::ready(InetAddress &addr)
 
 int Socket::accept()
 {
-	int peerfd=accept(_fd,NULL,NULL);
+	int peerfd = ::accept(_fd,NULL,NULL);
 	if(-1==peerfd)
 	{
 		perror("accept");
@@ -29,8 +40,8 @@ int Socket::accept()
 
 void Socket::bind(InetAddress &addr)
 {
-	int ret = bind(_fd,(struct sockaddr*)(addr.getInetAddressPtr(),sizeof(struct sockaddr)));
-	if(-1=ret)
+	int ret = ::bind(_fd,(struct sockaddr*)(addr.getInetAddressPtr()),sizeof(struct sockaddr));
+	if(-1==ret)
 	{
 		perror("bind");
 		close(_fd);
@@ -40,7 +51,7 @@ void Socket::bind(InetAddress &addr)
 
 void Socket::listen()
 {
-	int ret = listen(_fd,10);
+	int ret = ::listen(_fd,10);
 	if(-1==ret)
 	{
 		perror("listen");
@@ -53,7 +64,7 @@ int Socket::fd()
 	return _fd;
 }
 
-Socket::setReuseAddr(bool flag)
+void Socket::setReuseAddr(bool flag)
 {
 	int on = flag ? 1 : 0;
 
@@ -79,7 +90,7 @@ void Socket::setReusePort(bool flag)
 						   SOL_SOCKET,
 						   SO_REUSEPORT,
 						   &on,
-						   static_cast<socklen_t>(sizeof(on)));
+					   static_cast<socklen_t>(sizeof(on)));
 	if(-1 == ret)
 	{
 		perror("setsockopt reuseport");

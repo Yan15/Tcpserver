@@ -2,6 +2,14 @@
 #define _MY_SOCKET_H_
 
 #include "Noncopyable.h"
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <arpa/inet.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+
 
 namespace st
 {

@@ -42,16 +42,5 @@ int main(void)
 
 	epollPoller.loop();
 
-#if 0
-	int peerfd = sock.accept();
-	st::TcpConnection conn(peerfd);
-	std::cout << conn.toString() << std::endl;
-	conn.send("welcome to server");
-	while(true)
-	{
-		std::string s1 = conn.receive();
-		conn.send(s1);
-	}
-#endif
 	return 0;
 }
